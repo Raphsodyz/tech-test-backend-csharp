@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "EHWGz8Qzu+ssDMp7/LaXsg5Pd0sjki1Gd34m8Si150oos/ycD2aUIGJF/0whpFGLuyLdi1M6t6uISsjMy0+wfQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\TI\\.nuget\\packages\\mongodb.bson\\2.20.0\\mongodb.bson.2.20.0.nupkg.sha512",
+    "C:\\Users\\TI\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

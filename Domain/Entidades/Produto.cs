@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,6 +13,7 @@ namespace Domain.Entidades
     public class Produto
     {
         [Key]
+        [BsonId]
         [Column("ID")]
         public int Id { get; set; }
 

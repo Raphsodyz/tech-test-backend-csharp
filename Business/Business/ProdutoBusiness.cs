@@ -1,5 +1,5 @@
 ﻿using Business.Interface;
-using Data.MySQL.Interface;
+using Data.Repositories.MySQL.Interface;
 using Domain.Entidades;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,8 @@ namespace Business.Business
 {
     public class ProdutoBusiness : IProdutoBusiness
     {
-        private readonly IProdutoRepository _produtoRepository;
-        public ProdutoBusiness(IProdutoRepository produtoRepository)
+        private readonly IProdutoReclacionalRepository _produtoRepository;
+        public ProdutoBusiness(IProdutoReclacionalRepository produtoRepository)
         {
             _produtoRepository = produtoRepository;
         }
@@ -32,7 +32,7 @@ namespace Business.Business
             throw new NotImplementedException();
         }
 
-        public IList<Produto> Listar()
+        public IList<Produto> Listar(int? maximo)
         {
             throw new NotImplementedException();
         }
