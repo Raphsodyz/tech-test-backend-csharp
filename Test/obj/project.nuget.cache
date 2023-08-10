@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dyO0l21wAzVWc0KpfHEUvJLZrxdQz1HhsmPm+7IpySzr2veFvBIQ4CJN8RkF6SjmgQVWr3ck1FAD7Br84d9Qng==",
+  "dgSpecHash": "a8qEKv5pqUFzIz3OoMbY2wJ64EtdtlSz+naNsyhVjZouevgeCZzG1yQo//lL5ToOOZoBh/mnEAVV+9Ciz5BQXg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Test\\Test.csproj",
+  "projectFilePath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Test\\Test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\TI\\.nuget\\packages\\coverlet.collector\\3.2.0\\coverlet.collector.3.2.0.nupkg.sha512",
     "C:\\Users\\TI\\.nuget\\packages\\microsoft.codecoverage\\17.5.0\\microsoft.codecoverage.17.5.0.nupkg.sha512",

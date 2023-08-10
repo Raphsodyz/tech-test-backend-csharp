@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj": {}
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj": {}
   },
   "projects": {
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj": {
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj",
+        "projectUniqueName": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj",
         "projectName": "Services",
-        "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj",
+        "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\Services.csproj",
         "packagesPath": "C:\\Users\\TI\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\obj\\",
+        "outputPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Services\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

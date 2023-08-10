@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj": {}
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj": {}
   },
   "projects": {
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj": {
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj",
+        "projectUniqueName": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj",
         "projectName": "Business",
-        "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj",
+        "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\Business.csproj",
         "packagesPath": "C:\\Users\\TI\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\obj\\",
+        "outputPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Business\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -31,11 +31,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj": {
-                "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj"
+              "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj": {
+                "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj"
               },
-              "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj"
+              "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj"
               }
             }
           }
@@ -69,12 +69,12 @@
         }
       }
     },
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj": {
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj",
+        "projectUniqueName": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj",
         "projectName": "Data",
-        "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj",
+        "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\Data.csproj",
         "packagesPath": "C:\\Users\\TI\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Data\\obj\\",
         "projectStyle": "PackageReference",
@@ -96,8 +96,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj"
+              "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj"
               }
             }
           }
@@ -136,6 +136,10 @@
               "target": "Package",
               "version": "[7.0.0, )"
             },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.20.0, )"
+            },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -161,12 +165,12 @@
         }
       }
     },
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
+        "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\TI\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\obj\\",
         "projectStyle": "PackageReference",

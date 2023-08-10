@@ -28,5 +28,8 @@ namespace Domain.Entidades
 
         [Column("DATA_CRIACAO")]
         public DateTime DataCriacao { get; set; }
+
+        [Column("ID_COMPARTILHADO")]
+        public int IdCompartilhado { get; set; }
     }
 }

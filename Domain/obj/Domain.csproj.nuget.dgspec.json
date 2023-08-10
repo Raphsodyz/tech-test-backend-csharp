@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {}
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
+    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
+        "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\TI\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\TI\\Source\\Repos\\Raphsodyz\\tech-test-backend-csharp\\Domain\\obj\\",
         "projectStyle": "PackageReference",

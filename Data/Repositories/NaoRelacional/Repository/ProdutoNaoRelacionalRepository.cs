@@ -16,7 +16,31 @@ namespace Data.Repositories.NaoRelacional.Repository
         public IList<Produto> Listar(int? maximo)
         {
             var produtos = _context.RecuperaColecao();
-            return produtos.Find(p => true).ToList();
+            if (maximo != null)
+                return produtos.AsQueryable().Take(maximo.Value).ToList();
+
+            return produtos.AsQueryable().ToList();
+        }
+
+        public Produto Recuperar(int id)
+        {
+            return _context.RecuperaColecao().Find(p => p.IdCompartilhado == id).FirstOrDefault();
+        }
+
+        public void Atualizar(Produto produto)
+        {
+            var filtro = Builders<Produto>.Filter.Eq(p => p.IdCompartilhado, produto.IdCompartilhado);
+            _context.RecuperaColecao().ReplaceOne(filtro, produto);
+        }
+
+        public void Criar(Produto entidade)
+        {
+            _context.RecuperaColecao().InsertOne(entidade);
+        }
+
+        public void Deletar(int id)
+        {
+            _context.RecuperaColecao().DeleteOne(p => p.IdCompartilhado == id);
         }
     }
 }
