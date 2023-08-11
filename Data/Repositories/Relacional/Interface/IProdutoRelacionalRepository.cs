@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories.Relacional.Interface
 {
-    public interface IProdutoReclacionalRepository
+    public interface IProdutoRelacionalRepository
     {
         IList<Produto> Listar(int? maximo);
         Produto Recuperar(int id);
         void Criar(Produto entidade);
         void Atualizar(Produto produto);
         void Deletar(int id);
+        List<int> ListarDadosCompartilhados();
     }
 }

@@ -14,5 +14,7 @@ namespace Data.Repositories.XmlTexto.Interfaces
         void Criar(Produto entidade);
         void Atualizar(Produto produto);
         void Deletar(int id);
+        List<int> ListarDadosCompartilhados();
+
     }
 }

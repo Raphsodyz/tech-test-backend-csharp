@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories.Relacional.Repository
 {
-    public class ProdutoRelacionalRepository : IProdutoReclacionalRepository
+    public class ProdutoRelacionalRepository : IProdutoRelacionalRepository
     {
         public MobilusRelacionalContext _context;
         public DbSet<Produto> _dbSet;
@@ -27,7 +27,7 @@ namespace Data.Repositories.Relacional.Repository
 
         public Produto Recuperar(int id)
         {
-            return _dbSet.FirstOrDefault(p => p.Id == id);
+            return _dbSet.FirstOrDefault(p => p.IdCompartilhado == id);
         }
 
         public void Criar(Produto entidade)
@@ -72,6 +72,11 @@ namespace Data.Repositories.Relacional.Repository
                 _dbSet.Attach(dbProduto);
 
             _dbSet.Remove(dbProduto);
+        }
+
+        public List<int> ListarDadosCompartilhados()
+        {
+            return _dbSet.Select(p => p.IdCompartilhado)?.ToList();
         }
     }
 }

@@ -1,0 +1,5 @@
+C:\Users\TI\source\repos\Raphsodyz\tech-test-backend-csharp\Business\obj\Debug\net7.0\Business.csproj.AssemblyReference.cache
+C:\Users\TI\source\repos\Raphsodyz\tech-test-backend-csharp\Business\obj\Debug\net7.0\Business.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\TI\source\repos\Raphsodyz\tech-test-backend-csharp\Business\obj\Debug\net7.0\Business.AssemblyInfoInputs.cache
+C:\Users\TI\source\repos\Raphsodyz\tech-test-backend-csharp\Business\obj\Debug\net7.0\Business.AssemblyInfo.cs
+C:\Users\TI\source\repos\Raphsodyz\tech-test-backend-csharp\Business\obj\Debug\net7.0\Business.csproj.CoreCompileInputs.cache

@@ -42,5 +42,10 @@ namespace Data.Repositories.NaoRelacional.Repository
         {
             _context.RecuperaColecao().DeleteOne(p => p.IdCompartilhado == id);
         }
+
+        public List<int> ListarDadosCompartilhados()
+        {
+            return _context.RecuperaColecao().AsQueryable().Select(p => p.IdCompartilhado)?.ToList();
+        }
     }
 }

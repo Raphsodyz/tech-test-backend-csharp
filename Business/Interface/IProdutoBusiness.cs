@@ -1,4 +1,5 @@
-﻿using Domain.Entidades;
+﻿using Domain.DTO;
+using Domain.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Business.Interface
 {
     public interface IProdutoBusiness
     {
-        IList<Produto> Listar(int? maximo);
-        Produto Recuperar(int id);
-        void Criar(Produto entidade);
-        void Atualizar(Produto produto);
-        void Deletar(int id);
+        IList<ProdutoDTO> Listar(int? maximo);
+        ProdutoDTO Recuperar(int? id);
+        void Criar(ProdutoDTO entidade);
+        void Atualizar(ProdutoDTO produto);
+        void Deletar(int? id);
     }
 }
