@@ -33,9 +33,13 @@ namespace Data.Repositories.NaoRelacional.Repository
             _context.RecuperaColecao().ReplaceOne(filtro, produto);
         }
 
-        public void Criar(Produto entidade)
+        public void Criar(Produto produto)
         {
-            _context.RecuperaColecao().InsertOne(entidade);
+            if(_context.RecuperaColecao().Find(p => p.IdCompartilhado == produto.IdCompartilhado).FirstOrDefault()?.Id == 0)
+                _context.RecuperaColecao().InsertOne(produto);
+
+            var filtro = Builders<Produto>.Filter.Eq(p => p.IdCompartilhado, produto.IdCompartilhado);
+            _context.RecuperaColecao().ReplaceOne(filtro, produto);
         }
 
         public void Deletar(int id)

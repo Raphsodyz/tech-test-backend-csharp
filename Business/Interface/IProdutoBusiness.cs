@@ -15,5 +15,6 @@ namespace Business.Interface
         void Criar(ProdutoDTO entidade);
         void Atualizar(ProdutoDTO produto);
         void Deletar(int? id);
+        void SincronizarBases();
     }
 }
