@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Repositories\Relacional\Migrations\" />
+    <Folder Include="Repositories\XmlTexto\Data\" />
   </ItemGroup>
 
   <ItemGroup>
