@@ -8,6 +8,9 @@ using Domain.Constantes;
 using Domain.DTO;
 using Domain.Entidades;
 using Domain.Enum;
+using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace Business.Business
 {
@@ -48,22 +51,69 @@ namespace Business.Business
 
         public IList<ProdutoDTO> Listar(int? maximo)
         {
-            return _mapper.Map<IList<ProdutoDTO>>(_produtoRelacionalRepository.Listar(maximo));
+            IList<ProdutoDTO> lista = _mapper.Map<IList<ProdutoDTO>>(_produtoRelacionalRepository.Listar(maximo));
+            if(lista?.Count > 0)
+                return lista;
+
+            throw new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO);
         }
 
-        public void Criar(ProdutoDTO entidade)
+        public void Criar(ProdutoDTO produtoDTO)
         {
-            
+            var entidade = _mapper.Map<Produto>(produtoDTO);
+            try
+            {
+                _produtoRelacionalRepository.Criar(entidade);
+                entidade.IdCompartilhado = entidade.Id;
+                _produtoRelacionalRepository.SalvarAlteracoes();
+
+                _produtoNaoRelacionalRepository.Criar(entidade);
+                _produtoXmlRepository.Criar(entidade);
+            }
+            catch (MongoWriteException)
+            {
+                SincronizarBases();
+            }
+            catch (XmlException)
+            {
+                SincronizarBases();
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
         }
 
-        public void Atualizar(ProdutoDTO produto)
+        public void Atualizar(ProdutoDTO produtoDTO)
         {
-            throw new NotImplementedException();
+            var entidade = _mapper.Map<Produto>(produtoDTO);
+            try
+            {
+                _produtoRelacionalRepository.Atualizar(entidade);
+                _produtoNaoRelacionalRepository.Atualizar(entidade);
+                _produtoXmlRepository.Atualizar(entidade);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Deletar(int? id)
         {
-            throw new NotImplementedException();
+            if(id == null)
+                throw new ArgumentNullException($"{Constantes.MensagensErro.ARGUMENTOS_VAZIOS}ID");
+
+            try
+            {
+                _produtoRelacionalRepository.Deletar((int)id);
+                _produtoNaoRelacionalRepository.Deletar((int)id);
+                _produtoXmlRepository.Deletar((int)id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void SincronizarBases()

@@ -21,16 +21,7 @@ namespace Business.Mapper
                 .ForMember(
                     dto => dto.Id,
                     entity => entity.MapFrom(src => src.IdCompartilhado));
-            CreateMap<ProdutoDTO, Produto>()
-                .ForMember(
-                    entity => entity.Quantidade,
-                    dto => dto.MapFrom(src => src.ValorTotal / src.Preco))
-                .ForMember(
-                    entity => entity.Preco,
-                    dto => dto.MapFrom(src => src.ValorTotal / src.Quantidade))
-                .ForMember(
-                    entity => entity.IdCompartilhado,
-                    dto => dto.MapFrom(src => src.Id));
+            CreateMap<ProdutoDTO, Produto>();
         }
     }
 }

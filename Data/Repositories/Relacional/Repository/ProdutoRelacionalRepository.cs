@@ -78,5 +78,10 @@ namespace Data.Repositories.Relacional.Repository
         {
             return _dbSet.Select(p => p.IdCompartilhado)?.ToList();
         }
+
+        public void SalvarAlteracoes()
+        {
+            _context.SaveChanges();
+        }
     }
 }

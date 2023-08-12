@@ -22,8 +22,9 @@ namespace Data.Repositories.XmlTexto.Context
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            _path = Path.GetDirectoryName(Directory.GetCurrentDirectory() + configuration.GetSection("XmlPath:DataPath").Value);
-            _serializer = new XmlSerializer(typeof(List<Produto>));
+            _path = Path.GetDirectoryName(Directory.GetCurrentDirectory() + configuration.GetSection("XmlPath:RootPath").Value) +
+                @"\" + configuration.GetRequiredSection("XmlPath:DataPath").Value;
+            _serializer = new XmlSerializer(typeof(Produto));
 
             if (!File.Exists(_path))
             {

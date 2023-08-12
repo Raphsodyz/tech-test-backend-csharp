@@ -15,7 +15,7 @@ namespace Domain.DTO
         [Key]
         [Range(0, int.MaxValue, ErrorMessage = "O valor enviado no campo {0} é inválido.")]
         [Display(Name = "ID")]
-        [Required(ErrorMessage = "O campo {0} é de preenchimento obrigatório.")]
+        [JsonIgnore]
         public int Id { get; set; }
 
         [Display(Name = "Nome")]

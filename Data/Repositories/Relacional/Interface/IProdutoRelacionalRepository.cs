@@ -15,5 +15,6 @@ namespace Data.Repositories.Relacional.Interface
         void Atualizar(Produto produto);
         void Deletar(int id);
         List<int> ListarDadosCompartilhados();
+        void SalvarAlteracoes();
     }
 }

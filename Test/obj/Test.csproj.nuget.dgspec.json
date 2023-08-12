@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Test\\Test.csproj": {}
+    "C:\\Users\\arthu\\Documents\\Projetos\\Mobilus\\tech-test-backend-csharp\\Test\\Test.csproj": {}
   },
   "projects": {
-    "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Test\\Test.csproj": {
+    "C:\\Users\\arthu\\Documents\\Projetos\\Mobilus\\tech-test-backend-csharp\\Test\\Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Test\\Test.csproj",
+        "projectUniqueName": "C:\\Users\\arthu\\Documents\\Projetos\\Mobilus\\tech-test-backend-csharp\\Test\\Test.csproj",
         "projectName": "Test",
-        "projectPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Test\\Test.csproj",
-        "packagesPath": "C:\\Users\\TI\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\TI\\source\\repos\\Raphsodyz\\tech-test-backend-csharp\\Test\\obj\\",
+        "projectPath": "C:\\Users\\arthu\\Documents\\Projetos\\Mobilus\\tech-test-backend-csharp\\Test\\Test.csproj",
+        "packagesPath": "C:\\Users\\arthu\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\arthu\\Documents\\Projetos\\Mobilus\\tech-test-backend-csharp\\Test\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\TI\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\arthu\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -76,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }

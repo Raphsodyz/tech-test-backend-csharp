@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\Relacional\Migrations\" />
+    <Compile Remove="Repositories\Relacional\Migrations\**" />
+    <EmbeddedResource Remove="Repositories\Relacional\Migrations\**" />
+    <None Remove="Repositories\Relacional\Migrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Repositories\XmlTexto\Data\" />
   </ItemGroup>
 

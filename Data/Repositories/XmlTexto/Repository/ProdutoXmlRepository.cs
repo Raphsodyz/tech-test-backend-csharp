@@ -21,58 +21,34 @@ namespace Data.Repositories.XmlTexto.Repository
 
         public void Criar(Produto produto)
         {
-            if(produto.Id == 0)
+            if (new FileInfo(_context.DiretorioXml()).Length == 0)
             {
-                using XmlTextReader leitor = new(_context.DiretorioXml());
-                try
-                {
-                    List<int> produtosIdsXml = new();
-                    while (leitor.Read())
-                    {
-                        if (leitor.NodeType != XmlNodeType.Element && leitor.Name != "Produto")
-                            continue;
+                produto.Id = 1;
+                NovoProduto(produto);
+                return;
+            }
 
-                        string xmlId = leitor.GetAttribute("Id");
-                        if (!string.IsNullOrWhiteSpace(xmlId))
-                            produtosIdsXml.Add(int.Parse(xmlId));
-                    }
-                    produto.Id = produtosIdsXml.Max() + 1;
-                }
-                catch
+            if (produto.IdCompartilhado != 0)
+            {
+                var produtoExist = Recuperar((int)produto.IdCompartilhado);
+                if(produtoExist != null)
                 {
-                    throw;
-                }
-                finally
-                {
-                    leitor.Close();
-                    leitor.Dispose();
+                    Atualizar(produto);
+                    return;
                 }
             }
 
-            StringWriter escreverTexto = new();
-            _context.Serializador().Serialize(escreverTexto, produto);
-            string produtoXml = escreverTexto.ToString();
+            if (produto.Id == 0)
+                produto.Id = IdIncremento();
 
-            using XmlWriter escreverXml = XmlWriter.Create(_context.DiretorioXml(), _context.ConfigsEscrever());
-            try
-            {
-                escreverXml.WriteStartElement("Produto");
-                escreverXml.WriteRaw(produtoXml);
-                escreverXml.WriteEndElement();
-            }
-            catch
-            {
-                throw;
-            }
-            finally 
-            { 
-                escreverXml.Close();
-                escreverXml.Dispose();
-            }
+            NovoProduto(produto);
         }
 
         public IList<Produto> Listar(int? maximo)
         {
+            if (new FileInfo(_context.DiretorioXml()).Length == 0)
+                return null;
+
             if (maximo == null)
             {
                 using StreamReader stream = new(_context.DiretorioXml());
@@ -110,6 +86,9 @@ namespace Data.Repositories.XmlTexto.Repository
 
         public Produto Recuperar(int id)
         {
+            if (new FileInfo(_context.DiretorioXml()).Length == 0)
+                return null;
+
             using XmlTextReader leitor = new(_context.DiretorioXml());
             try
             {
@@ -137,6 +116,9 @@ namespace Data.Repositories.XmlTexto.Repository
 
         public void Atualizar(Produto produto)
         {
+            if (new FileInfo(_context.DiretorioXml()).Length == 0)
+                return;
+
             using XmlTextReader leitor = new(_context.DiretorioXml());
             using XmlWriter escreverXml = XmlWriter.Create(_context.DiretorioXml(), _context.ConfigsEscrever());
             try
@@ -147,7 +129,7 @@ namespace Data.Repositories.XmlTexto.Repository
                         continue;
 
                     int idCompartilhado = int.Parse(leitor.GetAttribute("IdCompartilhado"));
-                    if (idCompartilhado == produto.IdCompartilhado)
+                    if (idCompartilhado != produto.IdCompartilhado)
                         continue;
 
                     escreverXml.WriteStartElement("Produto");
@@ -176,6 +158,9 @@ namespace Data.Repositories.XmlTexto.Repository
 
         public void Deletar(int id)
         {
+            if (new FileInfo(_context.DiretorioXml()).Length == 0)
+                return;
+
             XmlDocument documento = new XmlDocument();
             documento.Load(_context.DiretorioXml());
 
@@ -193,6 +178,9 @@ namespace Data.Repositories.XmlTexto.Repository
 
         public List<int> ListarDadosCompartilhados()
         {
+            if (new FileInfo(_context.DiretorioXml()).Length == 0)
+                return null;
+
             List<int> idsCompartilhados = new();
             using XmlTextReader leitor = new(_context.DiretorioXml());
             try
@@ -227,6 +215,58 @@ namespace Data.Repositories.XmlTexto.Repository
                 leitor.Dispose();
             }
             return idsCompartilhados;
+        }
+
+        private void NovoProduto(Produto produto)
+        {
+            StringWriter escreverTexto = new();
+            _context.Serializador().Serialize(escreverTexto, produto);
+            string produtoXml = escreverTexto.ToString();
+
+            using XmlWriter escreverXml = XmlWriter.Create(_context.DiretorioXml(), _context.ConfigsEscrever());
+            try
+            {
+                escreverXml.WriteStartElement("Produto");
+                escreverXml.WriteRaw(produtoXml);
+                escreverXml.WriteEndElement();
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                escreverXml.Close();
+                escreverXml.Dispose();
+            }
+        }
+
+        private int IdIncremento()
+        {
+            using XmlTextReader leitor = new(_context.DiretorioXml());
+            try
+            {
+                List<int> idsProdutosXml = new();
+                while (leitor.Read())
+                {
+                    if (leitor.NodeType != XmlNodeType.Element && leitor.Name != "Produto")
+                        continue;
+
+                    string xmlId = leitor.GetAttribute("Id");
+                    if (!string.IsNullOrWhiteSpace(xmlId))
+                        idsProdutosXml.Add(int.Parse(xmlId));
+                }
+                return idsProdutosXml.Max() + 1;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                leitor.Close();
+                leitor.Dispose();
+            }
         }
     }
 }

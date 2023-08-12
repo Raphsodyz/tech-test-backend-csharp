@@ -12,7 +12,7 @@ namespace Business.Interface
     {
         IList<ProdutoDTO> Listar(int? maximo);
         ProdutoDTO Recuperar(int? id);
-        void Criar(ProdutoDTO entidade);
+        void Criar(ProdutoDTO produtoDTO);
         void Atualizar(ProdutoDTO produto);
         void Deletar(int? id);
         void SincronizarBases();
