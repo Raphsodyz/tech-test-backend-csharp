@@ -59,7 +59,7 @@ namespace Services.Controllers
             try
             {
                 _produtoBusiness.Criar(produtoDTO);
-                return Ok(Constantes.MensagensSucesso.PRODUTO_CRIADO);
+                return StatusCode(StatusCodes.Status201Created, Constantes.MensagensSucesso.PRODUTO_CRIADO);
             }
             catch (Exception ex)
             {
