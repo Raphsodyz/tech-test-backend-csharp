@@ -75,6 +75,7 @@ namespace Data.Repositories.Relacional.Repository
                 _dbSet.Attach(dbProduto);
 
             _dbSet.Remove(dbProduto);
+            _context.SaveChanges();
         }
 
         public List<int> ListarDadosCompartilhados()

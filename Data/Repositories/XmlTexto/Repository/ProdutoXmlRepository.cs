@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace Data.Repositories.XmlTexto.Repository
@@ -126,71 +127,53 @@ namespace Data.Repositories.XmlTexto.Repository
             }
         }
 
+        //Não encontrei uma forma de atualizar o .xml sem carregar o arquivo inteiro na memória :/.
         public void Atualizar(Produto produto)
         {
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
                 return;
 
-            string temp = Path.GetTempFileName();
-            using XmlReader leitor = XmlReader.Create(_context.DiretorioXml());
-            using XmlWriter escreverXml = XmlWriter.Create(temp, _context.ConfigsEscrever());
             try
             {
-                escreverXml.WriteStartElement("Produtos");
-                new XmlSerializer(typeof(Produto)).Serialize(escreverXml, produto, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
-                while (leitor.Read())
-                {
-                    if (leitor.NodeType != XmlNodeType.Element || leitor.Name != "IdCompartilhado")
-                        continue;
+                XDocument xmlDoc = XDocument.Load(_context.DiretorioXml());
+                XElement produtoXml = xmlDoc.Descendants("Produto")
+                                        .FirstOrDefault(p => (int)p.Element("IdCompartilhado") == produto.IdCompartilhado);
 
-                    leitor.Read();
-                    if (leitor.NodeType == XmlNodeType.Text)
-                    {
-                        if (string.IsNullOrWhiteSpace(leitor.Value))
-                            continue;
-                        int xmlId = int.Parse(leitor.Value);
-                        if(xmlId == produto.IdCompartilhado)
-                            leitor.Skip();
-                    }
-                    escreverXml.WriteNode(leitor, true);
-                }
-                escreverXml.WriteEndElement();
+                if (produtoXml == null)
+                    return;
+
+                produtoXml.Element("Nome").Value = produto.Nome;
+                produtoXml.Element("Preco").Value = produto.Preco == 0 ? "0" : produto.Preco.ToString();
+                produtoXml.Element("Quantidade").Value = produto.Quantidade == 0 ? "0" : produto.Quantidade.ToString();
+                produtoXml.Element("DataCriacao").Value = produto.DataCriacao == DateTime.MinValue ? DateTime.MinValue.ToString() : produto.DataCriacao.ToString();
+
+                xmlDoc.Save(_context.DiretorioXml());
             }
             catch
             {
                 throw;
             }
-            finally
-            {
-                escreverXml.Dispose();
-                leitor.Dispose();
-            }
-
-            FileInfo file = new(_context.DiretorioXml());
-            if (XmlBloqueado(file))
-                throw new IOException(Constantes.MensagensErro.XML_BLOQUEADO);
-
-            File.Delete(_context.DiretorioXml());
-            File.Move(temp, _context.DiretorioXml());
         }
 
+        //Não encontrei uma forma de atualizar o .xml sem carregar o arquivo inteiro na memória :/.
         public void Deletar(int id)
         {
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
                 return;
-
-            XmlDocument documento = new XmlDocument();
-            documento.Load(_context.DiretorioXml());
-
-            XmlNodeList nodos = documento.SelectNodes("Produtos");
-            foreach (XmlNode nodo in nodos)
+            try
             {
-                int idCompartilhado = int.Parse(nodo.SelectSingleNode("Id").InnerText);
-                if (idCompartilhado == id)
-                {
-                    nodo.ParentNode.RemoveChild(nodo);
-                    break;
-                }
+                XDocument xmlDoc = XDocument.Load(_context.DiretorioXml());
+                XElement produtoXml = xmlDoc.Descendants("Produto")
+                                        .FirstOrDefault(p => (int)p.Element("IdCompartilhado") == id);
+                if (produtoXml == null)
+                    return;
+
+                produtoXml.Remove();
+                xmlDoc.Save(_context.DiretorioXml());
+            }
+            catch
+            {
+                throw;
             }
         }
 

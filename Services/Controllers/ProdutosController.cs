@@ -74,7 +74,26 @@ namespace Services.Controllers
             try
             {
                 _produtoBusiness.Atualizar(id, produto);
-                return Ok();
+                return Ok(Constantes.MensagensSucesso.PRODUTO_ATUALIZADO);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"{Constantes.MensagensErro.ERRO_500}\n{ex.Message}");
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Deletar(int? id)
+        {
+            try
+            {
+                _produtoBusiness.Deletar(id);
+                return Ok(Constantes.MensagensSucesso.PRODUTO_DELETADO);
             }
             catch (KeyNotFoundException ex)
             {

@@ -20,6 +20,8 @@ namespace Domain.Constantes
         public static class MensagensSucesso
         {
             public static readonly string PRODUTO_CRIADO = "Produto adicionado aos bancos de dados com sucesso.";
+            public static readonly string PRODUTO_ATUALIZADO = "O produto foi atualizado com sucesso.";
+            public static readonly string PRODUTO_DELETADO = "O produto foi removido dos bancos de dados com sucesso.";
         }
     }
 }

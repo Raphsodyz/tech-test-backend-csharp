@@ -28,24 +28,24 @@ namespace Domain.DTO
         [Display(Name = "Preço")]
         [DataType(DataType.Currency)]
         [Required(ErrorMessage = "O campo {0} é de preenchimento obrigatório.")]
-        public decimal Preco { get; set; }
+        public decimal? Preco { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "O valor enviado no campo {0} é inválido.")]
+        [Range(0.0, double.MaxValue, ErrorMessage = "O valor enviado no campo {0} é inválido.")]
         [Display(Name = "Quantidade")]
         [Required(ErrorMessage = "O campo {0} é de preenchimento obrigatório.")]
-        public int Quantidade { get; set; }
+        public int? Quantidade { get; set; }
 
         [Display(Name = "Data de Criação")]
         [Required(ErrorMessage = "O campo {0} é de preenchimento obrigatório.")]
         [DataType(DataType.DateTime)]
-        public DateTime DataCriacao { get; set; }
+        public DateTime? DataCriacao { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "O valor enviado no campo {0} é inválido.")]
         [Display(Name = "ID Compartilhado")]
         [JsonIgnore]
         public int IdCompartilhado { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "O valor enviado no campo {0} é inválido.")]
+        [Range(0.0, double.MaxValue, ErrorMessage = "O valor enviado no campo {0} é inválido.")]
         [Display(Name = "Valor Total")]
         [DataType(DataType.Currency)]
         public decimal ValorTotal { get; set; }
