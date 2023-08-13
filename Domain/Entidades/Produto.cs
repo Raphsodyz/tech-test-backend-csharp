@@ -7,33 +7,32 @@ using System.Xml.Serialization;
 namespace Domain.Entidades
 {
     [Table("PRODUTO")]
-    [XmlRoot(ElementName = "Produto")]
     public class Produto
     {
         [Key]
         [BsonId]
         [Column("ID")]
-        [XmlAttribute("Id")]
+        [BsonElement("ID")]
         public int Id { get; set; }
 
-        [XmlAttribute("Nome")]
         [Column("NOME")]
+        [BsonElement("NOME")]
         public string Nome { get; set; }
 
-        [XmlAttribute("Preco")]
         [Column("PRECO")]
+        [BsonElement("PRECO")]
         public decimal Preco { get; set; }
 
-        [XmlAttribute("Quantidade")]
         [Column("QUANTIDADE")]
+        [BsonElement("QUANTIDADE")]
         public int Quantidade { get; set; }
 
-        [XmlAttribute("DataCriacao")]
         [Column("DATA_CRIACAO")]
+        [BsonElement("DATA_CRIACAO")]
         public DateTime DataCriacao { get; set; }
 
-        [XmlAttribute("IdCompartilhado")]
         [Column("ID_COMPARTILHADO")]
+        [BsonElement("ID_COMPARTILHADO")]
         public int IdCompartilhado { get; set; }
     }
 }

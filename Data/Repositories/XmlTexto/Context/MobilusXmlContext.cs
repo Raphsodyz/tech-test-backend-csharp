@@ -29,6 +29,7 @@ namespace Data.Repositories.XmlTexto.Context
             if (!File.Exists(_path))
             {
                 using var stream = File.Create(_path);
+                stream.Dispose();
             }
         }
 
@@ -46,8 +47,8 @@ namespace Data.Repositories.XmlTexto.Context
         {
             XmlWriterSettings configs = new()
             {
-                OmitXmlDeclaration = true,
-                Indent = true
+                Indent = true,
+                Encoding = Encoding.Unicode
             };
 
             return configs;

@@ -7,7 +7,7 @@ namespace Data.Repositories.NaoRelacional.Context
     public class MobilusNaoRelacionalContext
     {
         private readonly IMongoDatabase _context;
-        private const string produtos = "Produtos";
+        private const string produtos = "Produto";
         public MobilusNaoRelacionalContext()
         {
             var configuration = new ConfigurationBuilder()

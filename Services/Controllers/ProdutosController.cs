@@ -66,5 +66,24 @@ namespace Services.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"{Constantes.MensagensErro.ERRO_500}\n{ex.Message}");
             }
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Atualizar(int? id, [FromBody]ProdutoDTO produto)
+        {
+            try
+            {
+                _produtoBusiness.Atualizar(id, produto);
+                return Ok();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"{Constantes.MensagensErro.ERRO_500}\n{ex.Message}");
+            }
+        }
     }
 }

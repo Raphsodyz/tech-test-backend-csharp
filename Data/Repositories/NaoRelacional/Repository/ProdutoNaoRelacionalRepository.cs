@@ -30,14 +30,24 @@ namespace Data.Repositories.NaoRelacional.Repository
         public void Atualizar(Produto produto)
         {
             var filtro = Builders<Produto>.Filter.Eq(p => p.IdCompartilhado, produto.IdCompartilhado);
+            var exist = _context.RecuperaColecao().Find(filtro).FirstOrDefault();
+            if (exist == null)
+            {
+                _context.RecuperaColecao().InsertOne(produto);
+                return;
+            }
+
             _context.RecuperaColecao().ReplaceOne(filtro, produto);
         }
 
         public void Criar(Produto produto)
         {
             var produtoExistente = _context.RecuperaColecao().Find(p => p.IdCompartilhado == produto.IdCompartilhado).FirstOrDefault();
-            if (produtoExistente?.IdCompartilhado == 0)
+            if (produtoExistente == null)
+            {
                 _context.RecuperaColecao().InsertOne(produto);
+                return;
+            }
 
             var filtro = Builders<Produto>.Filter.Eq(p => p.IdCompartilhado, produto.IdCompartilhado);
             _context.RecuperaColecao().ReplaceOne(filtro, produto);

@@ -84,8 +84,17 @@ namespace Business.Business
             }
         }
 
-        public void Atualizar(ProdutoDTO produtoDTO)
+        public void Atualizar(int? id, ProdutoDTO produtoDTO)
         {
+            if(id == null)
+                throw new ArgumentNullException($"{Constantes.MensagensErro.ARGUMENTOS_VAZIOS}ID");
+
+            if(produtoDTO == null)
+                throw new ArgumentNullException($"{Constantes.MensagensErro.ARGUMENTOS_VAZIOS}Produto");
+
+            _ = Recuperar(id) ?? throw new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO);
+            produtoDTO.IdCompartilhado = (int)id;
+
             var entidade = _mapper.Map<Produto>(produtoDTO);
             try
             {

@@ -20,7 +20,7 @@ namespace Data.Repositories.Relacional.Repository
         public IList<Produto> Listar(int? maximo)
         {
             if (maximo != null)
-                _dbSet.Take(maximo.Value);
+                return _dbSet.Take(maximo.Value).ToList();
 
             return _dbSet.ToList();
         }
@@ -55,7 +55,10 @@ namespace Data.Repositories.Relacional.Repository
         {
             if (_context.Entry(produto).State == EntityState.Detached)
             {
-                Produto dbProduto = _dbSet.Find(produto.Id);
+                Produto dbProduto = _dbSet.Find(produto.IdCompartilhado);
+                if (dbProduto == null) { Criar(produto); return; } 
+
+                produto.Id = dbProduto.Id;
                 _context.Entry(dbProduto).CurrentValues.SetValues(produto);
             }
             else if (_context.Entry(produto).State == EntityState.Unchanged)

@@ -1,13 +1,18 @@
 ﻿using Data.Repositories.XmlTexto.Context;
 using Data.Repositories.XmlTexto.Interfaces;
+using Domain.Constantes;
 using Domain.Entidades;
+using SharpCompress.Common;
+using SharpCompress.Compressors.Xz;
 using SharpCompress.Writers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace Data.Repositories.XmlTexto.Repository
 {
@@ -24,7 +29,7 @@ namespace Data.Repositories.XmlTexto.Repository
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
             {
                 produto.Id = 1;
-                NovoProduto(produto);
+                EscreverNovoArquivoXml(produto);
                 return;
             }
 
@@ -38,10 +43,8 @@ namespace Data.Repositories.XmlTexto.Repository
                 }
             }
 
-            if (produto.Id == 0)
-                produto.Id = IdIncremento();
-
-            NovoProduto(produto);
+            produto.Id = IdIncremento();
+            EscreverArquivoExistenteXml(produto);
         }
 
         public IList<Produto> Listar(int? maximo)
@@ -52,7 +55,18 @@ namespace Data.Repositories.XmlTexto.Repository
             if (maximo == null)
             {
                 using StreamReader stream = new(_context.DiretorioXml());
-                return (IList<Produto>)_context.Serializador().Deserialize(stream);
+                try
+                {
+                    return (IList<Produto>)_context.Serializador().Deserialize(stream);
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    stream.Dispose();
+                }
             }
 
             int contagem = 0;
@@ -79,7 +93,6 @@ namespace Data.Repositories.XmlTexto.Repository
             }
             finally
             {
-                leitor.Close();
                 leitor.Dispose();
             }
         }
@@ -94,7 +107,7 @@ namespace Data.Repositories.XmlTexto.Repository
             {
                 while (leitor.Read())
                 {
-                    if (leitor.NodeType != XmlNodeType.Element && leitor.Name != "Produto")
+                    if (leitor.NodeType != XmlNodeType.Element || leitor.Name != "Produto")
                         continue;
 
                     Produto produto = (Produto)_context.Serializador().Deserialize(leitor.ReadSubtree());
@@ -109,7 +122,6 @@ namespace Data.Repositories.XmlTexto.Repository
             }
             finally
             {
-                leitor.Close();
                 leitor.Dispose();
             }
         }
@@ -119,29 +131,30 @@ namespace Data.Repositories.XmlTexto.Repository
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
                 return;
 
-            using XmlTextReader leitor = new(_context.DiretorioXml());
-            using XmlWriter escreverXml = XmlWriter.Create(_context.DiretorioXml(), _context.ConfigsEscrever());
+            string temp = Path.GetTempFileName();
+            using XmlReader leitor = XmlReader.Create(_context.DiretorioXml());
+            using XmlWriter escreverXml = XmlWriter.Create(temp, _context.ConfigsEscrever());
             try
             {
+                escreverXml.WriteStartElement("Produtos");
+                new XmlSerializer(typeof(Produto)).Serialize(escreverXml, produto, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
                 while (leitor.Read())
                 {
-                    if (leitor.NodeType != XmlNodeType.Element && leitor.Name != "Produto")
+                    if (leitor.NodeType != XmlNodeType.Element || leitor.Name != "IdCompartilhado")
                         continue;
 
-                    int idCompartilhado = int.Parse(leitor.GetAttribute("IdCompartilhado"));
-                    if (idCompartilhado != produto.IdCompartilhado)
-                        continue;
-
-                    escreverXml.WriteStartElement("Produto");
-
-                    escreverXml.WriteElementString("Nome", produto.Nome);
-                    escreverXml.WriteElementString("Preco", produto.Preco.ToString());
-                    escreverXml.WriteElementString("Quantidade", produto.Quantidade.ToString());
-                    escreverXml.WriteElementString("DataCriacao", produto.DataCriacao.ToString());
-
-                    escreverXml.WriteEndElement();
-                    break;
+                    leitor.Read();
+                    if (leitor.NodeType == XmlNodeType.Text)
+                    {
+                        if (string.IsNullOrWhiteSpace(leitor.Value))
+                            continue;
+                        int xmlId = int.Parse(leitor.Value);
+                        if(xmlId == produto.IdCompartilhado)
+                            leitor.Skip();
+                    }
+                    escreverXml.WriteNode(leitor, true);
                 }
+                escreverXml.WriteEndElement();
             }
             catch
             {
@@ -149,12 +162,17 @@ namespace Data.Repositories.XmlTexto.Repository
             }
             finally
             {
-                escreverXml.Close();
                 escreverXml.Dispose();
-                leitor.Close();
                 leitor.Dispose();
             }
-        }        
+
+            FileInfo file = new(_context.DiretorioXml());
+            if (XmlBloqueado(file))
+                throw new IOException(Constantes.MensagensErro.XML_BLOQUEADO);
+
+            File.Delete(_context.DiretorioXml());
+            File.Move(temp, _context.DiretorioXml());
+        }
 
         public void Deletar(int id)
         {
@@ -211,23 +229,18 @@ namespace Data.Repositories.XmlTexto.Repository
             }
             finally
             {
-                leitor.Close();
                 leitor.Dispose();
             }
             return idsCompartilhados;
         }
 
-        private void NovoProduto(Produto produto)
+        private void EscreverNovoArquivoXml(Produto produto)
         {
-            StringWriter escreverTexto = new();
-            _context.Serializador().Serialize(escreverTexto, produto);
-            string produtoXml = escreverTexto.ToString();
-
             using XmlWriter escreverXml = XmlWriter.Create(_context.DiretorioXml(), _context.ConfigsEscrever());
             try
             {
-                escreverXml.WriteStartElement("Produto");
-                escreverXml.WriteRaw(produtoXml);
+                escreverXml.WriteStartElement("Produtos");
+                new XmlSerializer(typeof(Produto)).Serialize(escreverXml, produto, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
                 escreverXml.WriteEndElement();
             }
             catch
@@ -236,9 +249,70 @@ namespace Data.Repositories.XmlTexto.Repository
             }
             finally
             {
-                escreverXml.Close();
                 escreverXml.Dispose();
             }
+        }
+
+        private void EscreverArquivoExistenteXml(Produto produto)
+        {
+            string temp = Path.GetTempFileName();
+            using XmlReader leitor = XmlReader.Create(_context.DiretorioXml());
+            using XmlWriter escreverXml = XmlWriter.Create(temp, _context.ConfigsEscrever());
+            try
+            {
+                escreverXml.WriteStartElement("Produtos");
+                new XmlSerializer(typeof(Produto)).Serialize(escreverXml, produto, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
+                while (leitor.Read())
+                {
+                    if (leitor.NodeType == XmlNodeType.Element && leitor.Name == "Produto")
+                        escreverXml.WriteNode(leitor, true);
+                }
+                escreverXml.WriteEndElement();
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                escreverXml.Dispose();
+                leitor.Dispose();
+            }
+
+            FileInfo file = new(_context.DiretorioXml());
+            if (XmlBloqueado(file))
+                throw new IOException(Constantes.MensagensErro.XML_BLOQUEADO);
+
+            File.Delete(_context.DiretorioXml());
+            File.Move(temp, _context.DiretorioXml());
+        }
+
+        private bool XmlBloqueado(FileInfo file)
+        {
+            bool trancado = true;
+            int tentativas = 0;
+            int maximoTentativas = 3;
+
+            while (trancado && tentativas < maximoTentativas)
+            {
+                using FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
+                try
+                {
+                    stream.Dispose();
+                    trancado = false;
+                    return trancado;
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(100);
+                    tentativas++;
+                }
+                finally
+                {
+                    stream.Dispose();
+                }
+            }
+            return trancado;
         }
 
         private int IdIncremento()
@@ -249,12 +323,16 @@ namespace Data.Repositories.XmlTexto.Repository
                 List<int> idsProdutosXml = new();
                 while (leitor.Read())
                 {
-                    if (leitor.NodeType != XmlNodeType.Element && leitor.Name != "Produto")
+                    if (leitor.NodeType != XmlNodeType.Element || leitor.Name != "Id")
                         continue;
 
-                    string xmlId = leitor.GetAttribute("Id");
-                    if (!string.IsNullOrWhiteSpace(xmlId))
-                        idsProdutosXml.Add(int.Parse(xmlId));
+                    leitor.Read();
+                    if (leitor.NodeType == XmlNodeType.Text)
+                    {
+                        string xmlId = leitor.Value;
+                        if (!string.IsNullOrWhiteSpace(xmlId))
+                            idsProdutosXml.Add(int.Parse(xmlId));
+                    }
                 }
                 return idsProdutosXml.Max() + 1;
             }
@@ -264,7 +342,6 @@ namespace Data.Repositories.XmlTexto.Repository
             }
             finally
             {
-                leitor.Close();
                 leitor.Dispose();
             }
         }
