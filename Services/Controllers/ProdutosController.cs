@@ -104,5 +104,20 @@ namespace Services.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"{Constantes.MensagensErro.ERRO_500}\n{ex.Message}");
             }
         }
+
+        [HttpPost]
+        [Route("sincronizacao")]
+        public IActionResult Sincronizar()
+        {
+            try
+            {
+                _produtoBusiness.SincronizarBases();
+                return Ok(Constantes.MensagensSucesso.PRODUTOS_SINCRONIZADOS);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"{Constantes.MensagensErro.ERRO_500}\n{ex.Message}");
+            }
+        }
     }
 }

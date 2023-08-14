@@ -182,29 +182,24 @@ namespace Data.Repositories.XmlTexto.Repository
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
                 return null;
 
-            List<int> idsCompartilhados = new();
             using XmlTextReader leitor = new(_context.DiretorioXml());
             try
             {
+                List<int> idsCompartilhados = new();
                 while (leitor.Read())
                 {
-                    Produto temporario = null;
-                    if (leitor.NodeType == XmlNodeType.Element)
+                    if (leitor.NodeType != XmlNodeType.Element || leitor.Name != "IdCompartilhado")
+                        continue;
+
+                    leitor.Read();
+                    if (leitor.NodeType == XmlNodeType.Text)
                     {
-                        if (leitor.Name == "Produto")
-                            temporario = new Produto();
-                        else if (leitor.Name == "IdCompartilhado" && temporario != null)
-                        {
-                            if (leitor.Read())
-                                temporario.IdCompartilhado = int.Parse(leitor.Value);
-                        }
-                    }
-                    else if (leitor.NodeType == XmlNodeType.EndElement && leitor.Name == "Produto" && temporario != null)
-                    {
-                        idsCompartilhados.Add(temporario.IdCompartilhado);
-                        temporario = null;
+                        string xmlId = leitor.Value;
+                        if (!string.IsNullOrWhiteSpace(xmlId))
+                            idsCompartilhados.Add(int.Parse(xmlId));
                     }
                 }
+                return idsCompartilhados;
             }
             catch
             {
@@ -214,7 +209,6 @@ namespace Data.Repositories.XmlTexto.Repository
             {
                 leitor.Dispose();
             }
-            return idsCompartilhados;
         }
 
         private void EscreverNovoArquivoXml(Produto produto)
@@ -270,7 +264,7 @@ namespace Data.Repositories.XmlTexto.Repository
             File.Move(temp, _context.DiretorioXml());
         }
 
-        private bool XmlBloqueado(FileInfo file)
+        private static bool XmlBloqueado(FileInfo file)
         {
             bool trancado = true;
             int tentativas = 0;
