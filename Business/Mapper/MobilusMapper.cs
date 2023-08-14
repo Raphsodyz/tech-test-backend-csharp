@@ -14,14 +14,14 @@ namespace Business.Mapper
     {
         public MobilusMapper()
         {
-            CreateMap<Produto, ProdutoDTO>()
+            CreateMap<Produto, ProdutoDetalhesDTO>()
                 .ForMember(
                     dto => dto.ValorTotal,
                     entity => entity.MapFrom(src => src.Quantidade * src.Preco))
                 .ForMember(
-                    dto => dto.Id,
+                    dto => dto.Codigo,
                     entity => entity.MapFrom(src => src.IdCompartilhado));
-            CreateMap<ProdutoDTO, Produto>();
+            CreateMap<ProdutoDTO, Produto>().ReverseMap();
         }
     }
 }

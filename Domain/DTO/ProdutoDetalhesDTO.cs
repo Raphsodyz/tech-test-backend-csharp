@@ -1,22 +1,16 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Domain.DTO
 {
-    public class ProdutoDTO
+    public class ProdutoDetalhesDTO
     {
-        [Key]
-        [Display(Name = "ID")]
-        [JsonIgnore]
-        public Guid Id { get; set; }
-
         [Display(Name = "Nome")]
         [StringLength(255, ErrorMessage = "O nome enviado no campo {0} está em um tamanho inválido.", MinimumLength = 2)]
         [DataType(DataType.Text)]
@@ -40,8 +34,7 @@ namespace Domain.DTO
         public DateTime? DataCriacao { get; set; }
 
         [Display(Name = "ID Compartilhado")]
-        [JsonIgnore]
-        public Guid IdCompartilhado { get; set; }
+        public Guid Codigo { get; set; }
 
         [Range(0.0, double.MaxValue, ErrorMessage = "O valor enviado no campo {0} é inválido.")]
         [Display(Name = "Valor Total")]

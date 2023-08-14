@@ -29,22 +29,19 @@ namespace Data.Repositories.XmlTexto.Repository
         {
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
             {
-                produto.Id = 1;
+                produto.Id = Guid.NewGuid();
                 EscreverNovoArquivoXml(produto);
                 return;
             }
 
-            if (produto.IdCompartilhado != 0)
+            var produtoExist = Recuperar(produto.IdCompartilhado);
+            if(produtoExist != null)
             {
-                var produtoExist = Recuperar((int)produto.IdCompartilhado);
-                if(produtoExist != null)
-                {
-                    Atualizar(produto);
-                    return;
-                }
+                Atualizar(produto);
+                return;
             }
 
-            produto.Id = IdIncremento();
+            produto.Id = Guid.NewGuid();
             EscreverArquivoExistenteXml(produto);
         }
 
@@ -98,7 +95,7 @@ namespace Data.Repositories.XmlTexto.Repository
             }
         }
 
-        public Produto Recuperar(int id)
+        public Produto Recuperar(Guid id)
         {
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
                 return null;
@@ -137,7 +134,7 @@ namespace Data.Repositories.XmlTexto.Repository
             {
                 XDocument xmlDoc = XDocument.Load(_context.DiretorioXml());
                 XElement produtoXml = xmlDoc.Descendants("Produto")
-                                        .FirstOrDefault(p => (int)p.Element("IdCompartilhado") == produto.IdCompartilhado);
+                                        .FirstOrDefault(p => (Guid)p.Element("IdCompartilhado") == produto.IdCompartilhado);
 
                 if (produtoXml == null)
                     return;
@@ -145,7 +142,7 @@ namespace Data.Repositories.XmlTexto.Repository
                 produtoXml.Element("Nome").Value = produto.Nome;
                 produtoXml.Element("Preco").Value = produto.Preco == 0 ? "0" : produto.Preco.ToString();
                 produtoXml.Element("Quantidade").Value = produto.Quantidade == 0 ? "0" : produto.Quantidade.ToString();
-                produtoXml.Element("DataCriacao").Value = produto.DataCriacao == DateTime.MinValue ? DateTime.MinValue.ToString() : produto.DataCriacao.ToString();
+                produtoXml.Element("DataCriacao").Value = produto.DataCriacao == DateTime.MinValue ? DateTime.MinValue.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") : produto.DataCriacao.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 
                 xmlDoc.Save(_context.DiretorioXml());
             }
@@ -156,7 +153,7 @@ namespace Data.Repositories.XmlTexto.Repository
         }
 
         //Não encontrei uma forma de atualizar o .xml sem carregar o arquivo inteiro na memória :/.
-        public void Deletar(int id)
+        public void Deletar(Guid id)
         {
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
                 return;
@@ -164,7 +161,7 @@ namespace Data.Repositories.XmlTexto.Repository
             {
                 XDocument xmlDoc = XDocument.Load(_context.DiretorioXml());
                 XElement produtoXml = xmlDoc.Descendants("Produto")
-                                        .FirstOrDefault(p => (int)p.Element("IdCompartilhado") == id);
+                                        .FirstOrDefault(p => (Guid)p.Element("IdCompartilhado") == id);
                 if (produtoXml == null)
                     return;
 
@@ -177,7 +174,7 @@ namespace Data.Repositories.XmlTexto.Repository
             }
         }
 
-        public List<int> ListarDadosCompartilhados()
+        public List<Guid> ListarDadosCompartilhados()
         {
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
                 return null;
@@ -185,7 +182,7 @@ namespace Data.Repositories.XmlTexto.Repository
             using XmlTextReader leitor = new(_context.DiretorioXml());
             try
             {
-                List<int> idsCompartilhados = new();
+                List<Guid> idsCompartilhados = new();
                 while (leitor.Read())
                 {
                     if (leitor.NodeType != XmlNodeType.Element || leitor.Name != "IdCompartilhado")
@@ -196,7 +193,7 @@ namespace Data.Repositories.XmlTexto.Repository
                     {
                         string xmlId = leitor.Value;
                         if (!string.IsNullOrWhiteSpace(xmlId))
-                            idsCompartilhados.Add(int.Parse(xmlId));
+                            idsCompartilhados.Add(Guid.Parse(xmlId));
                     }
                 }
                 return idsCompartilhados;

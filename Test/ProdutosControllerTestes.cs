@@ -1,7 +1,10 @@
 using AutoMapper;
+using Business.Business;
 using Business.Interface;
 using Business.Mapper;
+using Data.Repositories.NaoRelacional.Interface;
 using Data.Repositories.Relacional.Interface;
+using Data.Repositories.XmlTexto.Interfaces;
 using Domain.Constantes;
 using Domain.DTO;
 using Domain.Entidades;
@@ -187,11 +190,11 @@ namespace Test
                 ValorTotal = 5 * 10
             };
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<int>())).Returns(produto);
+            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<Guid> ())).Returns(produto);
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Recupera(It.IsAny<int?>()) as OkObjectResult;
+            var resultado = controller.Recupera(It.IsAny<Guid?>()) as OkObjectResult;
 
             //Assert
             Assert.IsNotNull(resultado);
@@ -203,11 +206,11 @@ namespace Test
         {
             //Arrange
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<int>())).Throws(new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO));
+            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<Guid>())).Throws(new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Recupera(4);
+            var resultado = controller.Recupera(Guid.NewGuid());
 
             //Assert
             Assert.IsInstanceOfType(resultado, typeof(ObjectResult));
@@ -221,11 +224,11 @@ namespace Test
         {
             //Arrange
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<int>())).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
+            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<Guid>())).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Recupera(4);
+            var resultado = controller.Recupera(Guid.NewGuid());
 
             //Assert
             Assert.IsInstanceOfType(resultado, typeof(ObjectResult));
@@ -420,14 +423,14 @@ namespace Test
             //Arrange
             ProdutoDTO produto = new()
             {
-                Id = 1,
+                Id = Guid.NewGuid(),
                 Nome = "Caneta",
                 Preco = 5,
                 DataCriacao = DateTime.Now,
                 Quantidade = 10,
-                ValorTotal = 5 * 10,
-                IdCompartilhado = 1
+                ValorTotal = 5 * 10
             };
+            produto.IdCompartilhado = produto.Id;
 
             var produtoBusiness = new Mock<IProdutoBusiness>();
             produtoBusiness.Setup(pb => pb.Atualizar(produto.IdCompartilhado, produto));
@@ -448,21 +451,21 @@ namespace Test
             //Arrange
             ProdutoDTO produto = new()
             {
-                Id = 1,
+                Id = Guid.NewGuid(),
                 Nome = "Caneta",
                 Preco = 5,
                 DataCriacao = DateTime.Now,
                 Quantidade = 10,
-                ValorTotal = 5 * 10,
-                IdCompartilhado = 1
+                ValorTotal = 5 * 10
             };
+            produto.IdCompartilhado = produto.Id;
 
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Atualizar(2894, produto)).Throws(new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO));
+            produtoBusiness.Setup(pb => pb.Atualizar(Guid.NewGuid(), produto)).Throws(new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Atualizar(2894, produto) as ObjectResult;
+            var resultado = controller.Atualizar(Guid.NewGuid(), produto) as ObjectResult;
 
             //Assert
             Assert.AreEqual(StatusCodes.Status404NotFound, resultado.StatusCode);
@@ -475,21 +478,21 @@ namespace Test
             //Arrange
             ProdutoDTO produto = new()
             {
-                Id = 1,
+                Id = Guid.NewGuid(),
                 Nome = "Caneta",
                 Preco = 5,
                 DataCriacao = DateTime.Now,
                 Quantidade = 10,
-                ValorTotal = 5 * 10,
-                IdCompartilhado = 1
+                ValorTotal = 5 * 10
             };
+            produto.IdCompartilhado = produto.Id;
 
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Atualizar(2894, produto)).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
+            produtoBusiness.Setup(pb => pb.Atualizar(Guid.NewGuid(), produto)).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Atualizar(2894, produto) as ObjectResult;
+            var resultado = controller.Atualizar(Guid.NewGuid(), produto) as ObjectResult;
 
             //Assert
             Assert.AreEqual(StatusCodes.Status500InternalServerError, resultado.StatusCode);
@@ -499,7 +502,7 @@ namespace Test
         public void ProdutosController_Deletar_ProdutoDeletado()
         {
             //Arrange
-            int idProduto = 1; 
+            Guid idProduto = Guid.NewGuid(); 
 
             var produtoBusiness = new Mock<IProdutoBusiness>();
             produtoBusiness.Setup(pb => pb.Deletar(idProduto));
@@ -518,7 +521,7 @@ namespace Test
         public void ProdutosController_Deletar_ProdutoBancoNaoEncontrado()
         {
             //Arrange
-            int idProduto = 1;
+            Guid idProduto = Guid.NewGuid();
 
             var produtoBusiness = new Mock<IProdutoBusiness>();
             produtoBusiness.Setup(pb => pb.Deletar(idProduto)).Throws(new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO));
@@ -536,7 +539,7 @@ namespace Test
         public void ProdutosController_Deletar_ErroInterno()
         {
             //Arrange
-            int idProduto = 1;
+            Guid idProduto = Guid.NewGuid();
 
             var produtoBusiness = new Mock<IProdutoBusiness>();
             produtoBusiness.Setup(pb => pb.Deletar(idProduto)).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
@@ -544,6 +547,39 @@ namespace Test
 
             //Act
             var resultado = controller.Deletar(idProduto) as ObjectResult;
+
+            //Assert
+            Assert.AreEqual(StatusCodes.Status500InternalServerError, resultado.StatusCode);
+        }
+
+        [TestMethod]
+        public void ProdutosController_Sincronizar_SincronizarComSucesso()
+        {
+            //Arrange
+            var produtoBusiness = new Mock<IProdutoBusiness>();
+            produtoBusiness.Setup(pb => pb.SincronizarBases());
+
+            var controller = new ProdutosController(produtoBusiness.Object);
+
+            //Act
+            var resultado = controller.Sincronizar() as ObjectResult;
+
+            //Assert
+            Assert.AreEqual(StatusCodes.Status200OK, resultado.StatusCode);
+            Assert.AreEqual(Constantes.MensagensSucesso.PRODUTOS_SINCRONIZADOS, resultado.Value.ToString());
+        }
+
+        [TestMethod]
+        public void ProdutosController_Sincronizar_SincronizarException()
+        {
+            //Arrange
+            var produtoBusiness = new Mock<IProdutoBusiness>();
+            produtoBusiness.Setup(pb => pb.SincronizarBases()).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
+
+            var controller = new ProdutosController(produtoBusiness.Object);
+
+            //Act
+            var resultado = controller.Sincronizar() as ObjectResult;
 
             //Assert
             Assert.AreEqual(StatusCodes.Status500InternalServerError, resultado.StatusCode);

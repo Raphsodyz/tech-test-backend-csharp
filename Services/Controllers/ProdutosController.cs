@@ -18,7 +18,7 @@ namespace Services.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult Recupera(int? id)
+        public IActionResult Recupera(Guid? id)
         {
             try
             {
@@ -58,8 +58,8 @@ namespace Services.Controllers
         {
             try
             {
-                _produtoBusiness.Criar(produtoDTO);
-                return StatusCode(StatusCodes.Status201Created, Constantes.MensagensSucesso.PRODUTO_CRIADO);
+                var codigo = _produtoBusiness.Criar(produtoDTO);
+                return StatusCode(StatusCodes.Status201Created, $"{Constantes.MensagensSucesso.PRODUTO_CRIADO}{codigo}");
             }
             catch (Exception ex)
             {
@@ -69,7 +69,7 @@ namespace Services.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Atualizar(int? id, [FromBody]ProdutoDTO produto)
+        public IActionResult Atualizar(Guid? id, [FromBody]ProdutoDTO produto)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace Services.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Deletar(int? id)
+        public IActionResult Deletar(Guid? id)
         {
             try
             {

@@ -33,50 +33,56 @@ namespace Business.Business
             _mapper = mapper;
         }
 
-        public ProdutoDTO Recuperar(int? id)
+        public ProdutoDetalhesDTO Recuperar(Guid? id)
         {
             if(id == null)
                 throw new ArgumentNullException($"{Constantes.MensagensErro.ARGUMENTOS_VAZIOS}ID");
 
-            var produto = _produtoRelacionalRepository.Recuperar((int)id);
+            var produto = _produtoRelacionalRepository.Recuperar((Guid)id);
             if (produto != null)
-                return _mapper.Map<ProdutoDTO>(produto);
+            {
+                PersistirDados((int)ERepositorios.RELACIONAL, produto);
+                return _mapper.Map<ProdutoDetalhesDTO>(produto);
+            }
 
-            produto = VerificarDemaisBases((int)id);
+            produto = VerificarDemaisBases((Guid)id);
             if(produto != null)
-                return _mapper.Map<ProdutoDTO>(produto);
+                return _mapper.Map<ProdutoDetalhesDTO>(produto);
 
             throw new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO);
         }
 
-        public IList<ProdutoDTO> Listar(int? maximo)
+        public IList<ProdutoDetalhesDTO> Listar(int? maximo)
         {
-            IList<ProdutoDTO> lista = _mapper.Map<IList<ProdutoDTO>>(_produtoRelacionalRepository.Listar(maximo));
+            IList<ProdutoDetalhesDTO> lista = _mapper.Map<IList<ProdutoDetalhesDTO>>(_produtoRelacionalRepository.Listar(maximo));
             if(lista?.Count > 0)
                 return lista;
 
             throw new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO);
         }
 
-        public void Criar(ProdutoDTO produtoDTO)
+        public Guid Criar(ProdutoDTO produtoDTO)
         {
             var entidade = _mapper.Map<Produto>(produtoDTO);
             try
             {
-                _produtoRelacionalRepository.Criar(entidade);
-                entidade.IdCompartilhado = entidade.Id;
-                _produtoRelacionalRepository.SalvarAlteracoes();
+                entidade.IdCompartilhado = Guid.NewGuid();
 
+                _produtoRelacionalRepository.Criar(entidade);
                 _produtoNaoRelacionalRepository.Criar(entidade);
                 _produtoXmlRepository.Criar(entidade);
+
+                return entidade.IdCompartilhado;
             }
             catch (MongoWriteException)
             {
                 SincronizarBases();
+                throw;
             }
             catch (XmlException)
             {
                 SincronizarBases();
+                throw;
             }
             catch (Exception) 
             {
@@ -84,7 +90,7 @@ namespace Business.Business
             }
         }
 
-        public void Atualizar(int? id, ProdutoDTO produtoDTO)
+        public void Atualizar(Guid? id, ProdutoDTO produtoDTO)
         {
             if(id == null)
                 throw new ArgumentNullException($"{Constantes.MensagensErro.ARGUMENTOS_VAZIOS}ID");
@@ -93,7 +99,7 @@ namespace Business.Business
                 throw new ArgumentNullException($"{Constantes.MensagensErro.ARGUMENTOS_VAZIOS}Produto");
 
             _ = Recuperar(id) ?? throw new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO);
-            produtoDTO.IdCompartilhado = (int)id;
+            produtoDTO.IdCompartilhado = (Guid)id;
 
             var entidade = _mapper.Map<Produto>(produtoDTO);
             try
@@ -108,16 +114,16 @@ namespace Business.Business
             }
         }
 
-        public void Deletar(int? id)
+        public void Deletar(Guid? id)
         {
             if(id == null)
                 throw new ArgumentNullException($"{Constantes.MensagensErro.ARGUMENTOS_VAZIOS}ID");
 
             try
             {
-                _produtoRelacionalRepository.Deletar((int)id);
-                _produtoNaoRelacionalRepository.Deletar((int)id);
-                _produtoXmlRepository.Deletar((int)id);
+                _produtoRelacionalRepository.Deletar((Guid)id);
+                _produtoNaoRelacionalRepository.Deletar((Guid)id);
+                _produtoXmlRepository.Deletar((Guid)id);
             }
             catch (Exception)
             {
@@ -129,9 +135,9 @@ namespace Business.Business
         {
             try
             {
-                List<int> produtosRelacional = _produtoRelacionalRepository.ListarDadosCompartilhados();
-                List<int> produtosNaoRelacional = _produtoNaoRelacionalRepository.ListarDadosCompartilhados();
-                List<int> produtostexto = _produtoXmlRepository.ListarDadosCompartilhados();
+                List<Guid> produtosRelacional = _produtoRelacionalRepository.ListarDadosCompartilhados();
+                List<Guid> produtosNaoRelacional = _produtoNaoRelacionalRepository.ListarDadosCompartilhados();
+                List<Guid> produtostexto = _produtoXmlRepository.ListarDadosCompartilhados();
 
                 SincronizarRelacional(produtosRelacional, produtosNaoRelacional, produtostexto);
                 SincronizarNaoRelacional(produtosRelacional, produtosNaoRelacional, produtostexto);
@@ -143,99 +149,93 @@ namespace Business.Business
             }
         }
 
-        private void SincronizarRelacional(List<int> relacional, List<int> naoRelacional, List<int> texto)
+        private void SincronizarRelacional(List<Guid> relacional, List<Guid> naoRelacional, List<Guid> texto)
         {
-            IEnumerable<int> difRelacionalNaoRelacional = naoRelacional.Except(relacional);
-            IEnumerable<int> difRelacionalTexto = texto.Except(relacional);
+            IEnumerable<Guid> difRelacionalNaoRelacional = naoRelacional.Except(relacional);
+            IEnumerable<Guid> difRelacionalTexto = texto.Except(relacional);
 
             if (difRelacionalNaoRelacional?.Count() > 0)
             {
-                foreach (int idDadoNaoRelacional in difRelacionalNaoRelacional)
+                foreach (Guid idDadoNaoRelacional in difRelacionalNaoRelacional)
                 {
                     var produto = _produtoNaoRelacionalRepository.Recuperar(idDadoNaoRelacional);
-                    produto.Id = 0;
                     _produtoRelacionalRepository.Criar(produto);
                 }
             }
 
             if (difRelacionalTexto?.Count() > 0)
             {
-                foreach (int idDadoTexto in difRelacionalTexto)
+                foreach (Guid idDadoTexto in difRelacionalTexto)
                 {
                     var produto = _produtoXmlRepository.Recuperar(idDadoTexto);
-                    produto.Id = 0;
                     _produtoRelacionalRepository.Criar(produto);
                 }
             }
         }
 
-        private void SincronizarNaoRelacional(List<int> relacional, List<int> naoRelacional, List<int> texto)
+        private void SincronizarNaoRelacional(List<Guid> relacional, List<Guid> naoRelacional, List<Guid> texto)
         {
-            IEnumerable<int> difNaoRelacionalRelacional = relacional.Except(naoRelacional);
-            IEnumerable<int> difNaoRelacionalTexto = texto.Except(naoRelacional);
+            IEnumerable<Guid> difNaoRelacionalRelacional = relacional.Except(naoRelacional);
+            IEnumerable<Guid> difNaoRelacionalTexto = texto.Except(naoRelacional);
 
             if (difNaoRelacionalRelacional?.Count() > 0)
             {
-                foreach (int idDadoRelacional in difNaoRelacionalRelacional)
+                foreach (Guid idDadoRelacional in difNaoRelacionalRelacional)
                 {
                     var produto = _produtoRelacionalRepository.Recuperar(idDadoRelacional);
-                    produto.Id = 0;
                     _produtoNaoRelacionalRepository.Criar(produto);
                 }
             }
 
             if (difNaoRelacionalTexto?.Count() > 0)
             {
-                foreach (int idDadoTexto in difNaoRelacionalTexto)
+                foreach (Guid idDadoTexto in difNaoRelacionalTexto)
                 {
                     var produto = _produtoXmlRepository.Recuperar(idDadoTexto);
-                    produto.Id = 0;
                     _produtoNaoRelacionalRepository.Criar(produto);
                 }
             }
         }
 
-        private void SincronizarTexto(List<int> relacional, List<int> naoRelacional, List<int> texto)
+        private void SincronizarTexto(List<Guid> relacional, List<Guid> naoRelacional, List<Guid> texto)
         {
-            IEnumerable<int> difTextoRelacional = relacional.Except(texto);
-            IEnumerable<int> difTextoNaoRelacional = naoRelacional.Except(texto);
+            IEnumerable<Guid> difTextoRelacional = relacional.Except(texto);
+            IEnumerable<Guid> difTextoNaoRelacional = naoRelacional.Except(texto);
 
             if (difTextoRelacional?.Count() > 0)
             {
-                foreach (int idDadoRelacional in difTextoRelacional)
+                foreach (Guid idDadoRelacional in difTextoRelacional)
                 {
                     var produto = _produtoRelacionalRepository.Recuperar(idDadoRelacional);
-                    produto.Id = 0;
                     _produtoXmlRepository.Criar(produto);
                 }
             }
 
             if (difTextoNaoRelacional?.Count() > 0)
             {
-                foreach (int idDadoNaoRelacional in difTextoNaoRelacional)
+                foreach (Guid idDadoNaoRelacional in difTextoNaoRelacional)
                 {
                     var produto = _produtoNaoRelacionalRepository.Recuperar(idDadoNaoRelacional);
-                    produto.Id = 0;
                     _produtoXmlRepository.Criar(produto);
                 }
             }
         }
 
-        private Produto VerificarDemaisBases(int id)
+        private Produto VerificarDemaisBases(Guid id)
         {
             try
             {
                 var produtoMongodb = _produtoNaoRelacionalRepository.Recuperar(id);
                 if (produtoMongodb != null)
                 {
-                    PersistirDados((int)EnumRepositorios.NAO_RELACIONAL, produtoMongodb);
+                    PersistirDados((int)ERepositorios.NAO_RELACIONAL, produtoMongodb);
                     return produtoMongodb;
                 }
 
                 var produtoTexto = _produtoXmlRepository.Recuperar(id);
                 if (produtoTexto != null)
                 {
-                    PersistirDados((int)EnumRepositorios.TEXTO, produtoTexto);
+                    PersistirDados((int)ERepositorios.TEXTO, produtoTexto);
                     return produtoTexto;
                 }
             }
@@ -250,14 +250,18 @@ namespace Business.Business
         {
             switch (repositorio)
             {
-                case (int)EnumRepositorios.NAO_RELACIONAL:
-                    produto.Id = 0;
+                case (int)ERepositorios.RELACIONAL:
+                    if (_produtoNaoRelacionalRepository.Recuperar(produto.IdCompartilhado) == null)
+                        _produtoNaoRelacionalRepository.Criar(produto);
+                    if (_produtoXmlRepository.Recuperar(produto.IdCompartilhado) == null)
+                        _produtoXmlRepository.Criar(produto);
+                    break;
+                case (int)ERepositorios.NAO_RELACIONAL:
                     _produtoRelacionalRepository.Criar(produto);
                     if (_produtoXmlRepository.Recuperar(produto.IdCompartilhado) == null)
                         _produtoXmlRepository.Criar(produto);
                     break;
-                case (int)EnumRepositorios.TEXTO:
-                    produto.Id = 0;
+                case (int)ERepositorios.TEXTO:
                     _produtoRelacionalRepository.Criar(produto);
                     _produtoNaoRelacionalRepository.Criar(produto);
                     break;

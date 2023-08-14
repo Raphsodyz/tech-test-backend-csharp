@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Enum
 {
-    public enum EnumRepositorios
+    public enum ERepositorios
     {
         [Display(Name = "RELACIONAL")]
         RELACIONAL = 0,

@@ -22,7 +22,7 @@ namespace Data.Repositories.NaoRelacional.Repository
             return produtos.AsQueryable().ToList();
         }
 
-        public Produto Recuperar(int id)
+        public Produto Recuperar(Guid id)
         {
             return _context.RecuperaColecao().Find(p => p.IdCompartilhado == id).FirstOrDefault();
         }
@@ -37,11 +37,13 @@ namespace Data.Repositories.NaoRelacional.Repository
                 return;
             }
 
+            produto.Id = exist.Id;
             _context.RecuperaColecao().ReplaceOne(filtro, produto);
         }
 
         public void Criar(Produto produto)
         {
+            produto.Id = Guid.NewGuid();
             var produtoExistente = _context.RecuperaColecao().Find(p => p.IdCompartilhado == produto.IdCompartilhado).FirstOrDefault();
             if (produtoExistente == null)
             {
@@ -53,12 +55,12 @@ namespace Data.Repositories.NaoRelacional.Repository
             _context.RecuperaColecao().ReplaceOne(filtro, produto);
         }
 
-        public void Deletar(int id)
+        public void Deletar(Guid id)
         {
             _context.RecuperaColecao().DeleteOne(p => p.IdCompartilhado == id);
         }
 
-        public List<int> ListarDadosCompartilhados()
+        public List<Guid> ListarDadosCompartilhados()
         {
             return _context.RecuperaColecao().AsQueryable().Select(p => p.IdCompartilhado)?.ToList();
         }

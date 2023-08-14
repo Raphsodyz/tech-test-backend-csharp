@@ -25,25 +25,24 @@ namespace Data.Repositories.Relacional.Repository
             return _dbSet.ToList();
         }
 
-        public Produto Recuperar(int id)
+        public Produto Recuperar(Guid id)
         {
             return _dbSet.FirstOrDefault(p => p.IdCompartilhado == id);
         }
 
         public void Criar(Produto entidade)
         {
-            if (entidade.Id == 0)
+            Produto dbEntity = _dbSet.FirstOrDefault(p => p.IdCompartilhado == entidade.IdCompartilhado);
+            if (dbEntity == null)
             {
+                entidade.Id = Guid.NewGuid();
                 _dbSet.Add(entidade);
                 _context.SaveChanges();
             }
             else
             {
                 if (_context.Entry(entidade).State == EntityState.Detached)
-                {
-                    Produto dbEntity = _dbSet.Find(entidade.Id);
                     _context.Entry(dbEntity).CurrentValues.SetValues(entidade);
-                }
                 else if (_context.Entry(entidade).State == EntityState.Unchanged)
                     _context.Entry(entidade).State = EntityState.Modified;
 
@@ -55,7 +54,7 @@ namespace Data.Repositories.Relacional.Repository
         {
             if (_context.Entry(produto).State == EntityState.Detached)
             {
-                Produto dbProduto = _dbSet.Find(produto.IdCompartilhado);
+                Produto dbProduto = _dbSet.FirstOrDefault(p => p.IdCompartilhado == produto.IdCompartilhado);
                 if (dbProduto == null) { Criar(produto); return; } 
 
                 produto.Id = dbProduto.Id;
@@ -67,9 +66,9 @@ namespace Data.Repositories.Relacional.Repository
             _context.SaveChanges();
         }
 
-        public void Deletar(int id)
+        public void Deletar(Guid id)
         {
-            Produto dbProduto = _dbSet.Find(id);
+            Produto dbProduto = _dbSet.FirstOrDefault(p => p.IdCompartilhado == id);
 
             if (_context.Entry(dbProduto).State == EntityState.Detached)
                 _dbSet.Attach(dbProduto);
@@ -78,14 +77,9 @@ namespace Data.Repositories.Relacional.Repository
             _context.SaveChanges();
         }
 
-        public List<int> ListarDadosCompartilhados()
+        public List<Guid> ListarDadosCompartilhados()
         {
             return _dbSet.Select(p => p.IdCompartilhado)?.ToList();
-        }
-
-        public void SalvarAlteracoes()
-        {
-            _context.SaveChanges();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Domain.Entidades
         [BsonId]
         [Column("ID")]
         [BsonElement("ID")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Column("NOME")]
         [BsonElement("NOME")]
@@ -33,6 +33,6 @@ namespace Domain.Entidades
 
         [Column("ID_COMPARTILHADO")]
         [BsonElement("ID_COMPARTILHADO")]
-        public int IdCompartilhado { get; set; }
+        public Guid IdCompartilhado { get; set; }
     }
 }

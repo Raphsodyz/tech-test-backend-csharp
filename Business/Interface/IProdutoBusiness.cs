@@ -10,11 +10,11 @@ namespace Business.Interface
 {
     public interface IProdutoBusiness
     {
-        IList<ProdutoDTO> Listar(int? maximo);
-        ProdutoDTO Recuperar(int? id);
-        void Criar(ProdutoDTO produtoDTO);
-        void Atualizar(int? id, ProdutoDTO produto);
-        void Deletar(int? id);
+        IList<ProdutoDetalhesDTO> Listar(int? maximo);
+        ProdutoDetalhesDTO Recuperar(Guid? id);
+        Guid Criar(ProdutoDTO produtoDTO);
+        void Atualizar(Guid? id, ProdutoDTO produto);
+        void Deletar(Guid? id);
         void SincronizarBases();
     }
 }
