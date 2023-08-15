@@ -3,6 +3,7 @@ using Domain.Constantes;
 using Domain.DTO;
 using Domain.Entidades;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Services.Controllers
 {
@@ -61,6 +62,10 @@ namespace Services.Controllers
                 var codigo = _produtoBusiness.Criar(produtoDTO);
                 return StatusCode(StatusCodes.Status201Created, $"{Constantes.MensagensSucesso.PRODUTO_CRIADO}{codigo}");
             }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"{Constantes.MensagensErro.ERRO_500}\n{ex.Message}");
@@ -75,6 +80,10 @@ namespace Services.Controllers
             {
                 _produtoBusiness.Atualizar(id, produto);
                 return Ok(Constantes.MensagensSucesso.PRODUTO_ATUALIZADO);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (KeyNotFoundException ex)
             {

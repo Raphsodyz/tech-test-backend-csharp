@@ -52,11 +52,11 @@ namespace Data.Repositories.Relacional.Repository
 
         public void Atualizar(Produto produto)
         {
+            Produto dbProduto = _dbSet.FirstOrDefault(p => p.IdCompartilhado == produto.IdCompartilhado);
+            if (dbProduto == null) { return; }
+
             if (_context.Entry(produto).State == EntityState.Detached)
             {
-                Produto dbProduto = _dbSet.FirstOrDefault(p => p.IdCompartilhado == produto.IdCompartilhado);
-                if (dbProduto == null) { Criar(produto); return; } 
-
                 produto.Id = dbProduto.Id;
                 _context.Entry(dbProduto).CurrentValues.SetValues(produto);
             }

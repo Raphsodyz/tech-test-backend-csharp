@@ -54,11 +54,13 @@ namespace Business.Business
 
         public IList<ProdutoDetalhesDTO> Listar(int? maximo)
         {
-            IList<ProdutoDetalhesDTO> lista = _mapper.Map<IList<ProdutoDetalhesDTO>>(_produtoRelacionalRepository.Listar(maximo));
-            if(lista?.Count > 0)
-                return lista;
+            SincronizarBases();
 
-            throw new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO);
+            var dbProdutos = _produtoRelacionalRepository.Listar(maximo);
+            if(dbProdutos?.Count == 0)
+                throw new KeyNotFoundException(Constantes.MensagensErro.LISTA_VAZIA);
+
+            return _mapper.Map<IList<ProdutoDetalhesDTO>>(dbProdutos);
         }
 
         public Guid Criar(ProdutoDTO produtoDTO)
@@ -76,13 +78,11 @@ namespace Business.Business
             }
             catch (MongoWriteException)
             {
-                SincronizarBases();
-                throw;
+                throw new Exception(Constantes.MensagensErro.ERRO_MONGODB);
             }
             catch (XmlException)
             {
-                SincronizarBases();
-                throw;
+                throw new Exception(Constantes.MensagensErro.ERRO_XML);
             }
             catch (Exception) 
             {
@@ -108,6 +108,14 @@ namespace Business.Business
                 _produtoNaoRelacionalRepository.Atualizar(entidade);
                 _produtoXmlRepository.Atualizar(entidade);
             }
+            catch (MongoWriteException)
+            {
+                throw new Exception(Constantes.MensagensErro.ERRO_MONGODB);
+            }
+            catch (XmlException)
+            {
+                throw new Exception(Constantes.MensagensErro.ERRO_XML);
+            }
             catch (Exception)
             {
                 throw;
@@ -124,6 +132,14 @@ namespace Business.Business
                 _produtoRelacionalRepository.Deletar((Guid)id);
                 _produtoNaoRelacionalRepository.Deletar((Guid)id);
                 _produtoXmlRepository.Deletar((Guid)id);
+            }
+            catch (MongoWriteException)
+            {
+                throw new Exception(Constantes.MensagensErro.ERRO_MONGODB);
+            }
+            catch (XmlException)
+            {
+                throw new Exception(Constantes.MensagensErro.ERRO_XML);
             }
             catch (Exception)
             {

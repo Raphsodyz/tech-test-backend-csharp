@@ -15,6 +15,9 @@ namespace Domain.Constantes
             public static readonly string PRODUTO_NAO_ENCONTRADO = "O produto selecionado na busca não foi encontrado.";
             public static readonly string ERRO_500 = "O serviço está indisponível ou foi encontrado algum erro durante a execução de sua requisição.";
             public static readonly string XML_BLOQUEADO = "O arquivo XML se encontra bloquado. Não foi possível salvar os produtos que foram inclusos localmente.";
+            public static readonly string LISTA_VAZIA = "Não existem produtos cadastrados em seu banco de dados.";
+            public static readonly string ERRO_MONGODB = "Atenção! O dado enviado foi salvo no banco de dados relacional, porém não foi salvo no MongoDB e no .xml. Verifique a disponibilidade do MongoDB e após faça uma sincronização.";
+            public static readonly string ERRO_XML = "Atenção! O dado enviado foi salvo no banco de dados relacional e não relacional, no arquivo .xml. Verifique a disponibilidade do arquivo .xml e após faça uma sincronização.";
         }
 
         public static class MensagensSucesso

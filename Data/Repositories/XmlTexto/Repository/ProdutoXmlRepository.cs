@@ -2,15 +2,6 @@
 using Data.Repositories.XmlTexto.Interfaces;
 using Domain.Constantes;
 using Domain.Entidades;
-using SharpCompress.Common;
-using SharpCompress.Compressors.Xz;
-using SharpCompress.Writers;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -177,7 +168,7 @@ namespace Data.Repositories.XmlTexto.Repository
         public List<Guid> ListarDadosCompartilhados()
         {
             if (new FileInfo(_context.DiretorioXml()).Length == 0)
-                return null;
+                return new List<Guid>();
 
             using XmlTextReader leitor = new(_context.DiretorioXml());
             try

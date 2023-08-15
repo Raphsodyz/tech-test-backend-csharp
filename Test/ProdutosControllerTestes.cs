@@ -1,10 +1,6 @@
 using AutoMapper;
-using Business.Business;
 using Business.Interface;
 using Business.Mapper;
-using Data.Repositories.NaoRelacional.Interface;
-using Data.Repositories.Relacional.Interface;
-using Data.Repositories.XmlTexto.Interfaces;
 using Domain.Constantes;
 using Domain.DTO;
 using Domain.Entidades;
@@ -38,7 +34,7 @@ namespace Test
             var erros = ValidateObject(produto);
 
             //Assert
-            Assert.AreEqual(0, erros.Count());
+            Assert.AreEqual(0, erros.Count);
         }
 
         [TestMethod]
@@ -58,7 +54,7 @@ namespace Test
             var erros = ValidateObject(produto);
 
             //Assert
-            Assert.AreEqual(1, erros.Count());
+            Assert.AreEqual(1, erros.Count);
             Assert.AreEqual(erros[0].ErrorMessage, "O valor enviado no campo Preço é inválido.");
         }
 
@@ -78,7 +74,7 @@ namespace Test
             var erros = ValidateObject(produto);
 
             //Assert
-            Assert.AreEqual(1, erros.Count());
+            Assert.AreEqual(1, erros.Count);
             Assert.AreEqual(erros[0].ErrorMessage, "O campo Nome é de preenchimento obrigatório.");
         }
 
@@ -98,7 +94,7 @@ namespace Test
             var erros = ValidateObject(produto);
 
             //Assert
-            Assert.AreEqual(1, erros.Count());
+            Assert.AreEqual(1, erros.Count);
             Assert.AreEqual(erros[0].ErrorMessage, "O campo Preço é de preenchimento obrigatório.");
         }
 
@@ -118,7 +114,7 @@ namespace Test
             var erros = ValidateObject(produto);
 
             //Assert
-            Assert.AreEqual(1, erros.Count());
+            Assert.AreEqual(1, erros.Count);
             Assert.AreEqual(erros[0].ErrorMessage, "O campo Quantidade é de preenchimento obrigatório.");
         }
 
@@ -138,7 +134,7 @@ namespace Test
             var erros = ValidateObject(produto);
 
             //Assert
-            Assert.AreEqual(1, erros.Count());
+            Assert.AreEqual(1, erros.Count);
             Assert.AreEqual(erros[0].ErrorMessage, "O campo Data de Criação é de preenchimento obrigatório.");
         }
 
@@ -158,7 +154,7 @@ namespace Test
             IMapper _mapper = config.CreateMapper();
 
             //Act
-            var produtoDTO = _mapper.Map<ProdutoDTO>(produto);
+            var produtoDTO = _mapper.Map<ProdutoDetalhesDTO>(produto);
 
             //Assert
             Assert.AreEqual(produtoDTO.ValorTotal, produto.Preco * produto.Quantidade);
@@ -175,22 +171,14 @@ namespace Test
 
         #endregion
 
-        #region Controller ações
+        #region Controller retornos
 
         [TestMethod]
         public void ProdutosController_Recupera_ProdutoEncontrado()
         {
             //Arrange
-            ProdutoDTO produto = new()
-            {
-                Nome = "Caneta",
-                Preco = 5,
-                DataCriacao = DateTime.Now,
-                Quantidade = 10,
-                ValorTotal = 5 * 10
-            };
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<Guid> ())).Returns(produto);
+            produtoBusiness.Setup(pb => pb.Recuperar(It.IsAny<Guid>())).Returns(produtoDetalhesDTO);
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
@@ -240,7 +228,7 @@ namespace Test
         public void ProdutosController_Listar_ListaRecuperada()
         {
             //Arrange
-            List<ProdutoDTO> produtos = new()
+            List<ProdutoDetalhesDTO> produtos = new()
             {
                 new()
                 {
@@ -248,7 +236,8 @@ namespace Test
                     Preco = 5,
                     DataCriacao = DateTime.Now,
                     Quantidade = 10,
-                    ValorTotal = 5 * 10
+                    ValorTotal = 5 * 10,
+                    Codigo = Guid.NewGuid()
                 },
 
                 new()
@@ -257,7 +246,8 @@ namespace Test
                     Preco = 3,
                     DataCriacao = DateTime.Now,
                     Quantidade = 8,
-                    ValorTotal = 3 * 8
+                    ValorTotal = 3 * 8,
+                    Codigo = Guid.NewGuid()
                 },
 
                 new()
@@ -266,10 +256,11 @@ namespace Test
                     Preco = 2,
                     DataCriacao = DateTime.Now,
                     Quantidade = 8,
-                    ValorTotal = 2 * 8
+                    ValorTotal = 2 * 8,
+                    Codigo = Guid.NewGuid()
                 }
             };
-            
+
             var produtoBusiness = new Mock<IProdutoBusiness>();
             produtoBusiness.Setup(pb => pb.Listar(null)).Returns(produtos);
             var controller = new ProdutosController(produtoBusiness.Object);
@@ -280,14 +271,14 @@ namespace Test
             //Assert
             Assert.IsNotNull(resultado);
             Assert.AreEqual(resultado.StatusCode, 200);
-            Assert.AreEqual(3, (resultado.Value as List<ProdutoDTO>).Count);
+            Assert.AreEqual(3, (resultado.Value as List<ProdutoDetalhesDTO>).Count);
         }
 
         [TestMethod]
         public void ProdutosController_Listar_ListaRecuperadaComParametroMaximo()
         {
             //Arrange
-            List<ProdutoDTO> produtos = new()
+            List<ProdutoDetalhesDTO> produtos = new()
             {
                 new()
                 {
@@ -295,7 +286,8 @@ namespace Test
                     Preco = 5,
                     DataCriacao = DateTime.Now,
                     Quantidade = 10,
-                    ValorTotal = 5 * 10
+                    ValorTotal = 5 * 10,
+                    Codigo = Guid.NewGuid()
                 },
 
                 new()
@@ -304,7 +296,8 @@ namespace Test
                     Preco = 3,
                     DataCriacao = DateTime.Now,
                     Quantidade = 8,
-                    ValorTotal = 3 * 8
+                    ValorTotal = 3 * 8,
+                    Codigo = Guid.NewGuid()
                 },
 
                 new()
@@ -313,9 +306,11 @@ namespace Test
                     Preco = 2,
                     DataCriacao = DateTime.Now,
                     Quantidade = 8,
-                    ValorTotal = 2 * 8
+                    ValorTotal = 2 * 8,
+                    Codigo = Guid.NewGuid()
                 }
             };
+
             int maximo = 1;
 
             var produtoBusiness = new Mock<IProdutoBusiness>();
@@ -328,7 +323,7 @@ namespace Test
             //Assert
             Assert.IsNotNull(resultado);
             Assert.AreEqual(resultado.StatusCode, 200);
-            Assert.AreEqual(1, (resultado.Value as List<ProdutoDTO>).Count);
+            Assert.AreEqual(1, (resultado.Value as List<ProdutoDetalhesDTO>).Count);
         }
 
         [TestMethod]
@@ -370,47 +365,29 @@ namespace Test
         public void ProdutosController_Criar_ProdutoCriado()
         {
             //Arrange
-            ProdutoDTO produto = new()
-            {
-                Nome = "Caneta",
-                Preco = 5,
-                DataCriacao = DateTime.Now,
-                Quantidade = 10,
-                ValorTotal = 5 * 10
-            };
-
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Criar(produto));
+            produtoBusiness.Setup(pb => pb.Criar(produtoDTO)).Returns(produtoDTO.IdCompartilhado);
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Criar(produto) as ObjectResult;
+            var resultado = controller.Criar(produtoDTO) as ObjectResult;
 
             //Assert
             Assert.IsNotNull(resultado);
             Assert.AreEqual(resultado.StatusCode, 201);
-            Assert.AreEqual(Constantes.MensagensSucesso.PRODUTO_CRIADO, resultado.Value.ToString());
+            Assert.AreEqual($"{Constantes.MensagensSucesso.PRODUTO_CRIADO}{produtoDTO.IdCompartilhado}", resultado.Value.ToString());
         }
 
         [TestMethod]
         public void ProdutosController_Criar_ErroInterno()
         {
             //Arrange
-            ProdutoDTO produto = new()
-            {
-                Nome = "Caneta",
-                Preco = 5,
-                DataCriacao = DateTime.Now,
-                Quantidade = 10,
-                ValorTotal = 5 * 10
-            };
-
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Criar(produto)).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
+            produtoBusiness.Setup(pb => pb.Criar(produtoDTO)).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Criar(produto) as ObjectResult;
+            var resultado = controller.Criar(produtoDTO) as ObjectResult;
 
             //Assert
             Assert.IsNotNull(resultado);
@@ -421,23 +398,12 @@ namespace Test
         public void ProdutosController_Atualizar_ProdutoAtualizado()
         {
             //Arrange
-            ProdutoDTO produto = new()
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Caneta",
-                Preco = 5,
-                DataCriacao = DateTime.Now,
-                Quantidade = 10,
-                ValorTotal = 5 * 10
-            };
-            produto.IdCompartilhado = produto.Id;
-
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Atualizar(produto.IdCompartilhado, produto));
+            produtoBusiness.Setup(pb => pb.Atualizar(produto.IdCompartilhado, produtoDTO));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Atualizar(produto.IdCompartilhado, produto) as ObjectResult;
+            var resultado = controller.Atualizar(produto.IdCompartilhado, produtoDTO) as ObjectResult;
 
             //Assert
             Assert.IsNotNull(resultado);
@@ -449,23 +415,12 @@ namespace Test
         public void ProdutosController_Atualizar_ProdutoBancoNaoEncontrado()
         {
             //Arrange
-            ProdutoDTO produto = new()
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Caneta",
-                Preco = 5,
-                DataCriacao = DateTime.Now,
-                Quantidade = 10,
-                ValorTotal = 5 * 10
-            };
-            produto.IdCompartilhado = produto.Id;
-
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Atualizar(Guid.NewGuid(), produto)).Throws(new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO));
+            produtoBusiness.Setup(pb => pb.Atualizar(produtoDTO.IdCompartilhado, produtoDTO)).Throws(new KeyNotFoundException(Constantes.MensagensErro.PRODUTO_NAO_ENCONTRADO));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Atualizar(Guid.NewGuid(), produto) as ObjectResult;
+            var resultado = controller.Atualizar(produtoDTO.IdCompartilhado, produtoDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(StatusCodes.Status404NotFound, resultado.StatusCode);
@@ -476,23 +431,12 @@ namespace Test
         public void ProdutosController_Atualizar_ErroInterno()
         {
             //Arrange
-            ProdutoDTO produto = new()
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Caneta",
-                Preco = 5,
-                DataCriacao = DateTime.Now,
-                Quantidade = 10,
-                ValorTotal = 5 * 10
-            };
-            produto.IdCompartilhado = produto.Id;
-
             var produtoBusiness = new Mock<IProdutoBusiness>();
-            produtoBusiness.Setup(pb => pb.Atualizar(Guid.NewGuid(), produto)).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
+            produtoBusiness.Setup(pb => pb.Atualizar(produtoDTO.IdCompartilhado, produtoDTO)).Throws(new Exception(Constantes.MensagensErro.ERRO_500));
             var controller = new ProdutosController(produtoBusiness.Object);
 
             //Act
-            var resultado = controller.Atualizar(Guid.NewGuid(), produto) as ObjectResult;
+            var resultado = controller.Atualizar(produtoDTO.IdCompartilhado, produtoDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(StatusCodes.Status500InternalServerError, resultado.StatusCode);
@@ -584,6 +528,39 @@ namespace Test
             //Assert
             Assert.AreEqual(StatusCodes.Status500InternalServerError, resultado.StatusCode);
         }
+
+        #endregion
+
+        #region Objetos Auxiliares
+
+        private readonly Produto produto = new()
+        {
+            Id = Guid.NewGuid(),
+            Nome = "Caneta",
+            Preco = 5,
+            DataCriacao = DateTime.Now,
+            Quantidade = 10,
+            IdCompartilhado = Guid.NewGuid(),
+        };
+
+        private readonly ProdutoDTO produtoDTO = new()
+        {
+            Nome = "Caneta",
+            Preco = 5,
+            DataCriacao = DateTime.Now,
+            Quantidade = 10,
+            IdCompartilhado = Guid.NewGuid()
+        };
+
+        private readonly ProdutoDetalhesDTO produtoDetalhesDTO = new()
+        {
+            Nome = "Caneta",
+            Preco = 5,
+            DataCriacao = DateTime.Now,
+            Quantidade = 10,
+            Codigo = Guid.NewGuid(),
+            ValorTotal = 5 * 10
+        };
 
         #endregion
     }
