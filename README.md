@@ -1,3 +1,15 @@
+# Soluções adotadas
+
+O projeto foi criado na forma de uma WebApi para consumo dos 3 repositórios de bancos de dados conforme solicitado. Utilizei o pattern de repository e de injeção de dependência para estruturação do código, divisão das responsabilidades, facilidade de leitura e manutenção. Foram incluídas 3 camadas bases no projeto:
+
+- Data: Responsável por realizar o acesso ao banco de dados, contendo os 3 context respectivos de cada banco com as operações básicas necessárias para o CRUD.
+- Domain: Responsável pelas classes utilizadas como: entidades, enumerators, constantes e DTOs.
+- Business: Camada de negócio responsável pelo gerenciamento e consumo dedos e estruturas da Data e Domain. Nela contem as regras de negócio solicitadas para integridade, consistência e persistência dos dados.
+- Services: Camada de exposição dos dados, é acessada via protocolos HTTP na API rest, expondo e consumindo os dados em formato JSON.
+
+Existem alguns métodos auxiliares também como o de sincronização que também disponibilizei na API para persistência dos dados, caso alguma database tenha um dados que a outra não tem.
+Utilizei em formato de texto local um arquivo em .xml para armazenamento dos dados. Foi escolhido por conta de ser fácil legibilidade e também de fácil serialização para a máquina.
+
 # Execução do código
 
 ## Requisitos:
